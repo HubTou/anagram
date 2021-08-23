@@ -1,0 +1,109 @@
+.Dd August 23, 2021
+.Dt ANAGRAM 6
+.Os
+.Sh NAME
+.Nm anagram
+.Nd rearrange letters to form new words
+.Sh SYNOPSIS
+.Nm
+.Op Fl d|--dictionary Ar pathname
+.Op Fl l|--length Ar numbers
+.Op Fl -debug
+.Op Fl -help|-?
+.Op Fl -version
+.Op Fl -
+.Op Ar letters
+.Sh DESCRIPTION
+The
+.Nm
+utility rearranges the given
+.Ar letters
+to form as many words (anagrams) as possible.
+.Pp
+Standard input is read if no letters are provided on the command line.
+.Pp
+The
+.Fl l|--length
+option can be used to form words of selected size with the letters provided.
+.Ss OPTIONS
+.Op Fl d|--dictionary Ar pathname
+Use this dictionary pathname if you don't want the default dictionary
+.Pp
+.Op Fl l|--length Ar numbers
+Specify anagrams lengths if you want intermediate sizes.
+.Ar numbers
+is a number or a comma separated list of numbers or dash separated number intervals
+.Pp
+.Op Fl -debug
+Enable debug mode
+.Pp
+.Op Fl -help|-?
+Print usage and this help message and exit
+.Pp
+.Op Fl -version
+Print version and exit
+.Pp
+.Op Fl -
+Options processing terminator
+.Sh ENVIRONMENT
+The
+.Ev ANAGRAM_DEBUG
+environment variable can also be set to any value to enable debug mode.
+.Pp
+The
+.Ev DICTPATH
+environment variable is the search path for the dictionary files.
+It is a colon-separated list of directories in which
+.Nm
+looks for a
+.Pa words
+dictionary file.
+If not set it will default to /usr/share/dict:/usr/local/share/dict.
+Under a Posix system, $HOME/.local/share/dict will also be added to the default,
+while %HOMEPATH%/appdata/roaming/python/share/dict:%HOMEPATH%/appdata/local/programs/python/pythonXX/share/dict will be added under a Windows system.
+.Pp
+The
+.Ev ANAGRAM_DICT
+environment variable provides a way to avoid specifying an alternate directory on each command line.
+.Sh FILES
+.Pa /usr/share/dict/words
+is the default (English) dictionary on a
+.Bx
+operating system.
+.Pp
+A French dictionary is also installed as a dependency.
+.Sh EXIT STATUS
+.Ex -std anagram
+.Sh EXAMPLES
+To solve a Wordscapes (French) level where the available letters are ABCDEFG, I use a command like:
+.Pp
+.Bd -literal
+$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-ABU-mots_communs.ascii
+$ anagram -l 3-7 abcdefg
+.Ed
+.Sh SEE ALSO
+.Xr grep 1
+.Sh STANDARDS
+The
+.Nm
+utility is not a standard UNIX command.
+.Pp
+This utility tries to follow the PEP 8 style guide for Python code.
+.Sh HISTORY
+This utility was made for the
+.Lk https://github.com/HubTou/PNU PNU project
+in order to help my wife play
+.Lk https://play.google.com/store/apps/details?id=com.peoplefun.wordcross Wordscapes
+when she was stuck on a level.
+.Sh LICENSE
+It is available under the 3-clause BSD license.
+.Sh AUTHORS
+.An Hubert Tournier
+.Sh CAVEATS
+An English dictionary should be packaged for operating systems that are not providing one.
+.Pp
+Searching only for a
+.Pa words
+link to one of the directories in the
+.Ev DICTPATH
+is too limitated.

@@ -9,6 +9,7 @@ anagram - rearrange letters to form new words
 ## SYNOPSIS
 **anagram**
 \[-d|--dictionary pathname\]
+\[-f|--files\]
 \[-l|--length numbers\]
 \[--debug\]
 \[--help|-?\]
@@ -23,10 +24,13 @@ Standard input is read if no letters are provided on the command line.
 
 The *-l|--length* option can be used to form words of selected size with the letters provided.
 
+The *-f|--files* option can help you select a dictionary.
+
 ### OPTIONS
 Options | Use
 ------- | ---
 -d\--dictionary pathname|Use this dictionary pathname if you don't want the default dictionary
+-f\|--files|Print possible dictionary files in the DICTPATH
 -l\|--length numbers|Specify anagrams lengths if you want intermediate sizes. *numbers* is a number or a comma separated list of numbers or dash separated number intervals
 --debug|Enable debug mode
 --help\|-?|Print usage and a short help message and exit
@@ -66,6 +70,9 @@ $ anagram -l 3-7 abcdefg
 The **anagram** utility is not a standard UNIX command.
 
 This utility tries to follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide for [Python](https://www.python.org/) code.
+
+## PORTABILITY
+Tested OK under Windows.
 
 ## HISTORY
 This utility was made for the [PNU project](https://github.com/HubTou/PNU)

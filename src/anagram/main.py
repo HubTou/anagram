@@ -11,7 +11,7 @@ import sys
 import time
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: anagram - rearrange letters to form new words v1.0.0 (August 23, 2021) by Hubert Tournier $"
+ID = "@(#) $Id: anagram - rearrange letters to form new words v1.1.0 (August 25, 2021) by Hubert Tournier $"
 
 # Default parameters. Can be overcome by environment variables, then command line options
 parameters = {
@@ -22,10 +22,10 @@ parameters = {
 
 
 ################################################################################
-def display_help():
+def _display_help():
     """Displays usage and help"""
     print("usage: anagram [--debug] [--help|-?] [--version]", file=sys.stderr)
-    print("       [-d|--dictionary PATH] [-l|--length NUMBERS]", file=sys.stderr)
+    print("       [-d|--dictionary PATH] [-f|--files] [-l|--length NUMBERS]", file=sys.stderr)
     print("       [--] [LETTERS]", file=sys.stderr)
     print(
         "  --------------------  ---------------------------------------------------",
@@ -33,6 +33,10 @@ def display_help():
     )
     print(
         "  -d|--dictionary PATH  Dictionary's pathname if you don't want the default",
+        file=sys.stderr
+    )
+    print(
+        "  -f|--files            Print possible dictionary files in the DICTPATH",
         file=sys.stderr
     )
     print(
@@ -60,7 +64,7 @@ def display_help():
 
 
 ################################################################################
-def process_environment_variables():
+def _process_environment_variables():
     """Process environment variables"""
     if "ANAGRAM_DEBUG" in os.environ.keys():
         logging.disable(logging.NOTSET)
@@ -102,9 +106,11 @@ def process_environment_variables():
                 parameters["Path"].append(pnu_dictpath2)
 
     # Setting the default dictionary, if any:
+    # (the first one named words)
     for directory in parameters["Path"]:
         if os.path.isfile(directory + os.sep + "words"):
             parameters["Dictionary"] = directory + os.sep + "words"
+            break
 
     if "ANAGRAM_DICT" in os.environ.keys():
         if os.path.isfile(os.environ["ANAGRAM_DICT"]):
@@ -115,7 +121,18 @@ def process_environment_variables():
 
 
 ################################################################################
-def get_number(length):
+def _list_dictionaries():
+    """Print the list of files in the DICTPATH"""
+    print("Possible dictionaries in these directories / files:", file=sys.stderr)
+    for directory in parameters["Path"]:
+        print("    " + directory + os.sep, file=sys.stderr)
+        for item in os.listdir(directory):
+            if os.path.isfile(directory + os.sep + item):
+                print("        " + item, file=sys.stderr)
+
+
+################################################################################
+def _get_number(length):
     """Read a number in the lengths specification"""
     try:
         value = int(length)
@@ -131,7 +148,7 @@ def get_number(length):
 
 
 ################################################################################
-def parse_numbers_list(lengths):
+def _parse_numbers_list(lengths):
     """Expands the lengths specification to a list of numbers"""
     numbers_list = []
 
@@ -143,8 +160,8 @@ def parse_numbers_list(lengths):
                 logging.critical("Lengths interval is invalid: %s", item)
                 sys.exit(1)
 
-            value1 = get_number(subitems[0])
-            value2 = get_number(subitems[1])
+            value1 = _get_number(subitems[0])
+            value2 = _get_number(subitems[1])
             if value1 >= value2:
                 logging.critical("Lengths interval values must be strictly ascending: %s", item)
                 sys.exit(1)
@@ -154,7 +171,7 @@ def parse_numbers_list(lengths):
                     numbers_list.append(value)
 
         else:
-            value = get_number(item)
+            value = _get_number(item)
             if value not in numbers_list:
                 numbers_list.append(value)
 
@@ -162,7 +179,7 @@ def parse_numbers_list(lengths):
 
 
 ################################################################################
-def process_command_line():
+def _process_command_line():
     """Process command line options"""
     # pylint: disable=C0103
     global parameters
@@ -170,10 +187,11 @@ def process_command_line():
 
     # option letters followed by : expect an argument
     # same for option strings followed by =
-    character_options = "d:l:?"
+    character_options = "d:fl:?"
     string_options = [
         "debug",
         "dictionary=",
+        "files",
         "help",
         "length=",
         "version",
@@ -185,7 +203,7 @@ def process_command_line():
         )
     except getopt.GetoptError as error:
         logging.critical("Syntax error: %s", error)
-        display_help()
+        _display_help()
         sys.exit(1)
 
     for option, argument in options:
@@ -200,27 +218,31 @@ def process_command_line():
                 logging.critical("Dictionary pathname doesn't exist: %s", argument)
                 sys.exit(1)
 
+        elif option in ("-f", "--files"):
+            _list_dictionaries()
+            sys.exit(0)
+
         elif option in ("--help", "-?"):
-            display_help()
+            _display_help()
             sys.exit(0)
 
         elif option in ("-l", "--length"):
-            parameters["Length"] = parse_numbers_list(argument)
+            parameters["Length"] = _parse_numbers_list(argument)
 
         elif option == "--version":
             print(ID.replace("@(" + "#)" + " $" + "Id" + ": ", "").replace(" $", ""))
             sys.exit(0)
 
-    logging.debug("process_command_line(): parameters:")
+    logging.debug("_process_command_line(): parameters:")
     logging.debug(parameters)
-    logging.debug("process_command_line(): remaining_arguments:")
+    logging.debug("_process_command_line(): remaining_arguments:")
     logging.debug(remaining_arguments)
 
     return remaining_arguments
 
 
 ################################################################################
-def load_dictionary(dictionary, lengths):
+def _load_dictionary(dictionary, lengths):
     """Load the words of the required lengths from the chosen dictionary"""
     time_start = time.time()
     words = {}
@@ -236,13 +258,13 @@ def load_dictionary(dictionary, lengths):
                 words[length].append(word)
 
     time_stop = time.time()
-    logging.debug("load_dictionary() time: %f", time_stop - time_start)
+    logging.debug("_load_dictionary() time: %f", time_stop - time_start)
 
     return words
 
 
 ################################################################################
-def search_anagrams(letters, lengths, words):
+def _search_anagrams(letters, lengths, words):
     """Search anagrams of the required lengths and letters from the loaded words"""
     time_start = time.time()
     anagrams = []
@@ -256,10 +278,11 @@ def search_anagrams(letters, lengths, words):
                     break
                 allowed_letters.remove(letter)
             if match:
-                anagrams.append(word)
+                if word not in anagrams:
+                    anagrams.append(word)
 
     time_stop = time.time()
-    logging.debug("search_anagrams() time: %f", time_stop - time_start)
+    logging.debug("_search_anagrams() time: %f", time_stop - time_start)
 
     return anagrams
 
@@ -270,11 +293,12 @@ def anagram(letters, lengths, dictionary):
     if not letters \
     or not dictionary:
         return []
+
     if not lengths:
         lengths = [len(letters)]
-    words = load_dictionary(dictionary, lengths)
+    words = _load_dictionary(dictionary, lengths)
 
-    return search_anagrams(letters, lengths, words)
+    return _search_anagrams(letters, lengths, words)
 
 
 ################################################################################
@@ -286,8 +310,8 @@ def main():
     logging.basicConfig(format=console_log_format, level=logging.DEBUG)
     logging.disable(logging.INFO)
 
-    process_environment_variables()
-    arguments = process_command_line()
+    _process_environment_variables()
+    arguments = _process_command_line()
 
     if arguments:
         letters = arguments[0]
@@ -300,6 +324,10 @@ def main():
 
     if not parameters["Dictionary"]:
         logging.critical("No dictionary found!")
+        _list_dictionaries()
+        print("Then either select one:", file=sys.stderr)
+        print("- with the -d option", file=sys.stderr)
+        print("- or with the ANAGRAM_DICT environment variable", file=sys.stderr)
         sys.exit(1)
 
     length = 0

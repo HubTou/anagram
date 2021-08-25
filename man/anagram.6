@@ -7,6 +7,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl d|--dictionary Ar pathname
+.Op Fl f|--files
 .Op Fl l|--length Ar numbers
 .Op Fl -debug
 .Op Fl -help|-?
@@ -25,9 +26,16 @@ Standard input is read if no letters are provided on the command line.
 The
 .Fl l|--length
 option can be used to form words of selected size with the letters provided.
+.Pp
+The
+.Fl f|--files
+option can help you select a dictionary.
 .Ss OPTIONS
 .Op Fl d|--dictionary Ar pathname
 Use this dictionary pathname if you don't want the default dictionary
+.Pp
+.Op Fl f|--files
+Print possible dictionary files in the DICTPATH
 .Pp
 .Op Fl l|--length Ar numbers
 Specify anagrams lengths if you want intermediate sizes.
@@ -89,6 +97,8 @@ The
 utility is not a standard UNIX command.
 .Pp
 This utility tries to follow the PEP 8 style guide for Python code.
+.Sh PORTABILITY
+Tested OK under Windows.
 .Sh HISTORY
 This utility was made for the
 .Lk https://github.com/HubTou/PNU PNU project

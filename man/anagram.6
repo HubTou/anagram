@@ -79,15 +79,22 @@ is the default (English) dictionary on a
 .Bx
 operating system.
 .Pp
-A French dictionary is also installed as a dependency.
+Some French dictionaries are also installed as a dependency.
 .Sh EXIT STATUS
 .Ex -std anagram
 .Sh EXAMPLES
 To solve a Wordscapes (French) level where the available letters are ABCDEFG, I use a command like:
 .Pp
 .Bd -literal
-$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-ABU-mots_communs.ascii
+$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-Wordscapes
 $ anagram -l 3-7 abcdefg
+.Ed
+.Pp
+Other dictionaries are also available. For example:
+.Pp
+.Bd -literal
+$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-ABU-mots_communs.ascii
+$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-AU-DELA-common_words.ascii
 .Ed
 .Sh SEE ALSO
 .Xr grep 1

@@ -51,7 +51,7 @@ The ANAGRAM_DICT environment variable provides a way to avoid specifying an alte
 ## FILES
 */usr/share/dict/words* is the default (English) dictionary on a BSD operating system.
 
-A French dictionary is also installed as a dependency.
+Some French dictionaries are also installed as a dependency.
 
 ## EXIT STATUS
 The **anagram** utility exits 0 on success, and >0 if an error occurs.
@@ -59,8 +59,14 @@ The **anagram** utility exits 0 on success, and >0 if an error occurs.
 ## EXAMPLES
 To solve a Wordscapes (French) level where the available letters are ABCDEFG, I use a command like:
 ```Shell
-$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-ABU-mots_communs.ascii
+$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-Wordscapes
 $ anagram -l 3-7 abcdefg
+```
+
+Other dictionaries are also available. For example:
+```Shell
+$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-ABU-mots_communs.ascii
+$ export ANAGRAM_DICT=/usr/local/share/dict/dict-fr-AU-DELA-common-words.ascii
 ```
 
 ## SEE ALSO
@@ -90,4 +96,3 @@ It is available under the [3-clause BSD license](https://opensource.org/licenses
 An English dictionary should be packaged for operating systems that are not providing one.
 
 Searching only for a *words* link to one of the directories in the DICTPATH is too limitated.
-

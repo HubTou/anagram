@@ -11,7 +11,7 @@ import sys
 import time
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: anagram - rearrange letters to form new words v1.1.0 (August 25, 2021) by Hubert Tournier $"
+ID = "@(#) $Id: anagram - rearrange letters to form new words v1.2.0 (September 10, 2021) by Hubert Tournier $"
 
 # Default parameters. Can be overcome by environment variables, then command line options
 parameters = {

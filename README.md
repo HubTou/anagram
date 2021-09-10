@@ -96,3 +96,4 @@ It is available under the [3-clause BSD license](https://opensource.org/licenses
 An English dictionary should be packaged for operating systems that are not providing one.
 
 Searching only for a *words* link to one of the directories in the DICTPATH is too limitated.
+

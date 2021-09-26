@@ -11,7 +11,7 @@ import sys
 import time
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: anagram - rearrange letters to form new words v1.2.1 (September 10, 2021) by Hubert Tournier $"
+ID = "@(#) $Id: anagram - rearrange letters to form new words v1.2.2 (September 26, 2021) by Hubert Tournier $"
 
 # Default parameters. Can be overcome by environment variables, then command line options
 parameters = {
@@ -19,6 +19,14 @@ parameters = {
     "Dictionary": "",
     "Length": [],
 }
+
+
+################################################################################
+def _initialize_debugging(program_name):
+    """Debugging set up"""
+    console_log_format = program_name + ": %(levelname)s: %(message)s"
+    logging.basicConfig(format=console_log_format, level=logging.DEBUG)
+    logging.disable(logging.INFO)
 
 
 ################################################################################
@@ -101,7 +109,7 @@ def _process_environment_variables():
             if os.path.isdir(pnu_dictpath):
                 parameters["Path"].append(pnu_dictpath)
 
-            pnu_dictpath2=sys.executable.replace("python.exe", "share" + os.sep + "dict")
+            pnu_dictpath2 = sys.base_prefix + os.sep + "share" + os.sep + "dict"
             if os.path.isdir(pnu_dictpath2):
                 parameters["Path"].append(pnu_dictpath2)
 
@@ -306,10 +314,7 @@ def main():
     """The program's main entry point"""
     program_name = os.path.basename(sys.argv[0])
 
-    console_log_format = program_name + ": %(levelname)s: %(message)s"
-    logging.basicConfig(format=console_log_format, level=logging.DEBUG)
-    logging.disable(logging.INFO)
-
+    _initialize_debugging(program_name)
     _process_environment_variables()
     arguments = _process_command_line()
 
